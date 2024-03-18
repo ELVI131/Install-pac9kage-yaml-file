@@ -1,0 +1,21 @@
+---
+- name: Uninstall Google Chrome
+  hosts: windows
+  tasks:
+    - name: Uninstall Google Chrome
+      win_shell: |
+        Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -like "Google Chrome*" } | ForEach-Object {
+            $_.Uninstall()
+        }
+      ignore_errors: yes
+
+    - name: Notify successful uninstallation
+      debug:
+        msg: "Google Chrome successfully uninstalled"
+
+- hosts: windows
+  gather_facts: no
+  become: no
+  tasks:
+    - name: Restart host
+      ansible.windows.win_reboot:
