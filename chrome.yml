@@ -1,0 +1,20 @@
+---
+- name: Install Application on Windows
+  hosts: windows
+  become: yes
+  become_user: ansible
+  tasks:
+    - name: Download application installer
+      win_get_url:
+        url: "https://dl.google.com/chrome/install/GoogleChromeStandaloneEnterprise64.msi"
+        dest: C:\Users\{{ ansible_user }}\Downloads\application_installer.msi
+
+    - name: Install application
+      win_command: msiexec /i C:\Users\{{ ansible_user }}\Downloads\application_installer.msi /quiet
+
+- hosts: windows
+  gather_facts: no
+  become: no
+  tasks:
+    - name: Restart host
+      ansible.windows.win_reboot:
